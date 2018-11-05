@@ -1,0 +1,53 @@
+
+1. LEON3 emulation
+
+The file 'leon3.c' contains a model of simple LEON3 sub-system. It
+contains 16 Mbyte ROM and 16 Mbyte RAM. Standard peripherals
+such as interrupt controller, UART and timer are provided.
+The model can execute leon3 binaries that do not require an
+MMU.
+
+To start sis in Leon3 mode, add the -leon3 switch. In gdb,
+use 'target sim -leon3' .
+
+1.1 UART
+
+The UART emulates an APBUART and is located at address 0x80000100.
+The following registers are implemented:
+
+- UART RX and TX register	(0x80000100)
+- UART status register		(0x80000104)
+
+The UART generates interrupt 3.
+
+1.2 Timer unit (GPTIMER)
+
+The GPTIMER programmable counter is emulated and located at
+address 0x80000300. It is configured with two timers and separate
+interrupts (8 and 9).
+
+1.3 Interrupt controller
+
+The IRQMP interrupt controller is implemented as described in the
+GRLIB IP manual, with the exception of the interrupt level register.
+Extended interrupts are not supported. The registers are located
+at address 0x80000200.
+
+1.5 Memory interface
+
+The following memory areas are valid for the Leon3 simulator:
+
+0x00000000 - 0x01000000		ROM (16 Mbyte, loaded at start-up)
+0x40000000 - 0x41000000		RAM (16 Mbyte, loaded at start-up)
+0x80000000 - 0x81000000		APB bus, including plug&play
+0xFFFFF000 - 0xFFFFFFFF		AHB plug&play area
+
+Access to non-existing memory will result in a memory exception trap.
+
+1.8 Power-down mode
+
+The Leon3 power-down feature (%asr19) is supported. When power-down is
+entered, time is skipped forward until the next event in the event queue.
+However, if the simulator event queue is empty, power-down mode is not
+entered since no interrupt would be generated to exit from the mode. A
+Ctrl-C in the simulator window will exit the power-down mode.

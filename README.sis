@@ -1,0 +1,290 @@
+
+SIS - Sparc Instruction Simulator README file  (v2.8, 07-29-2017)
+-------------------------------------------------------------------
+
+1. Introduction
+
+The SIS is a SPARC V7/V8 architecture simulator. It consist of two parts,
+the simulator core and a user defined memory module. The simulator
+core executes the instructions while the memory module emulates memory
+and peripherals.
+
+2. Usage
+
+The simulator is started as follows:
+
+sis [-leon2] [-leon3] [-uart1 uart_device1] [-uart2 uart_device2]
+    [-nfp] [-freq frequency] [-c batch_file] [-v] [-r] [-tlim time] [files]
+
+By default, SIS emulates an ERC32 system. The -leon2 switch enables
+LEON2 emulation, while the -leon3 switch enables emulation of a
+LEON3 SOC system.
+
+The emulated console uart is connected to stdin/stdout. The -uart[1,2]
+switch can be used to connect the uarts to other devices.
+
+The '-nfp' will disable the simulated FPU, so each FPU instruction will
+generate a FPU disabled trap. The '-freq' switch can be used to define
+which "frequency" the simulator runs at. This is used by the 'perf'
+command to calculated the MIPS figure for a particular configuration.
+The frequency must be an integer indicating the frequency in MHz.
+
+The -c option indicates that sis commands should be read from 'batch_file'
+at startup.
+
+-v sets the debug level to 1, to provide some diagnostic messages.
+
+-r starts execution immediately without an interactive shell. This is useful
+for automated testing of large number of binaries.
+
+-tlim can be used together with -r to limit the amount of simulated time that
+the simulator runs for before exiting. The following units are recognized:
+us, ms and s. To limit simulated time to 100 seconds, it should thus be
+started with -r -tlim 100s .
+
+Files to be loaded must be in one of the formats supported by the BFD library.
+This inlude elf, a.out, srec and binary. On start-up, the files will be
+loaded into the simulated memory.
+
+3. Internal commands
+
+Below is the description of commands that are recognized by the simulator.
+The command-line is parsed using GNU readline. A command
+history of 64 commands is maintained. Use the up/down arrows to recall
+previous commands. For more details, see the readline documentation.
+
+* List of commands:
+
+batch <file>
+
+Execute a batch file of SIS commands.
+
++bp <address>
+
+Adds an breakpoint at address <address>.
+
+bp
+
+Prints all breakpoints
+
+-bp <num>
+
+Deletes breakpoint <num>. Use 'bp' to see which number is assigned to the 
+breakpoints.
+
+cont [inst_count]
+
+Continue execution at present position, optionally for [inst_count] 
+instructions.
+
+dis [addr] [count]
+
+Disassemble [count] instructions at address [addr]. Default values for
+count is 16 and addr is the present address.
+
+echo <string>
+
+Print <string> to the simulator window.
+
+float
+
+Prints the FPU registers
+
+go <address> [inst_count]
+
+The go command will set pc to <address> and npc to <address> + 4, and start
+execution. If inst_count is given, execution will stop after the specified
+number of instructions.
+
+help
+
+Print a small help menu for the SIS commands.
+
+hist [trace_length]
+
+Enable the instruction trace buffer. The 'trace_length' last executed 
+instructions will be placed in the trace buffer. A 'hist' command without 
+a trace_length will display the trace buffer. Specifying a zero trace 
+length will disable the trace buffer.
+
+load  <file_name>
+
+Loads a file into simulator memory. 
+
+mem [addr] [count]
+
+Display memory at [addr] for [count] bytes. Same default values as above.
+
+quit
+
+Exits the simulator.
+
+perf [reset]
+
+The 'perf' command will display various execution statistics. A 'perf reset' 
+command will reset the statistics. This can be used if statistics shall 
+be calculated only over a part of the program. The 'run' and 'reset' 
+command also resets the statistic information.
+
+reg [reg_name] [value]
+
+Prints and sets the IU registers. 'reg' without parameters prints the IU
+registers. 'reg [reg_name] [value]' sets the corresponding register to
+[value]. Valid register names are psr, tbr, wim, y, g1-g7, o0-o7 and
+l0-l7.
+
+reset
+
+Performs a power-on reset. This command is equal to 'run 0'.
+
+run [inst_count]
+
+Resets the simulator and starts execution from address 0. If an instruction
+count is given (inst_count), the simulator will stop after the specified
+number of instructions. The event queue is emptied but any set breakpoints
+remain.
+
+step
+
+Equal to 'trace 1'
+
+tra [inst_count]
+
+Starts the simulator at the present position and prints each instruction
+it executes. If an instruction count is given (inst_count), the simulator
+will stop after the specified number of instructions.
+
+wmem [addr] [data]
+
+Writes [data] to memory at [addr]. Data is written as a 32-bit word.
+
+wp
+
+Prints all watchpoints
+
++wpr <address>
+
+Adds an read watchpoint at address <address>.
+
+-wpr <num>
+
+Deletes read watchpoint <num>. Use 'wp' to see which number is assigned to
+the watchpoints.
+
++wpw <address>
+
+Adds an write watchpoint at address <address>.
+
+-wpw <num>
+
+Deletes write watchpoint <num>. Use 'wp' to see which number is assigned to
+the watchpoints.
+
+Typing a 'Ctrl-C' will interrupt a running simulator.
+
+Short forms of the commands are allowed, e.g 'c' 'co' or 'con' are all
+interpreted as 'cont'.
+
+4. Using SIS with GDB
+
+To attach GDB to the simulator, use:
+
+target sim [options]
+
+The following options are supported:
+
+ -leon2         Emulate a LEON2 system
+
+ -leon3         Emulate a LEON3 system
+
+ -nfp           Disable FPU. FPops will cause an FPU disabled trap.
+
+ -freq <f>      Set the simulated "system clock" to <f> MHz.
+
+ -v             Verbose mode.
+
+ -nogdb         Disable GDB breakpoint handling (see below)
+
+To start debugging a program type 'load <program>' and debug as
+usual.
+
+The native simulator commands can be reached using the GDB 'sim'
+command:
+
+sim <sis_command>
+
+Direct simulator commands during a GDB session must be issued
+with care not to disturb GDB's operation ...
+
+A program can be restarted in GDB by first issuing the load command,
+followed by run.
+
+4.1 GDB breakpoint handling
+
+GDB inserts breakpoint in the form of the 'ta 1' instruction. The
+GDB-integrated simulator will therefore recognize the breakpoint
+instruction and return control to GDB. If the application uses
+'ta 1', the breakpoint detection can be disabled with the -nogdb
+switch. In this case however, GDB breakpoints will not work.
+
+
+5. Simulator core
+
+In ERC32 mode, SIS emulates the behavior of the 90C601E and 90C602E
+sparc IU and FPU from Matra MHS. These are roughly equivalent to the
+Cypress C601 and C602. The simulator is reasonably cycle accurate, a simulator
+time is maintained and incremented according the IU and FPU instruction timing.
+The parallel execution between the IU and FPU is modelled, as well as
+stalls due to operand dependencies (FPU).
+
+In Leon2/3 mode, the core emulates the Leon2/3 SPARC V8 core from
+Gaisler Research. All SPARC V8 instructions are supported but
+emulation is not fully cycle-true as the cache is not emulated.
+
+6. Memory module
+
+The ERC32 memory module (erc32.c) emulates the functions of memory and
+the MEC asic developed for the 90C601/2. It includes the following functions:
+
+* UART A & B
+* Real-time clock
+* General purpose timer
+* Interrupt controller
+* Breakpoint register
+* Watchpoint register
+* 512 Kbyte ROM
+* 4 Mbyte RAM
+
+See README.erc32 on how the MEC functions are emulated.
+
+The Leon2 memory module (leon2.c) emulates on-chip peripherals and
+external memory for a simple Leon2 system. The modules includes the
+following functions:
+
+* AHB and APB buses
+* One UART
+* Interrupt controller
+* Timer unit with two timers
+* PROM/SRAM memory controller
+* 16 Mbyte PROM, 16 Mbyte SRAM
+
+See README.leon2 for further details on Leon2 emulation.
+
+The Leon3 memory module (leon3.c) emulates on-chip peripherals and
+external memory for a simple Leon3 system. The modules includes the
+following functions:
+
+* AHB and APB buses with plug&play
+* UART (APBUART)
+* Interrupt controller (IRQMP)
+* Timer unit with two timers (GPTIMER)
+* PROM/SRAM memory controller (SRCTRL)
+* 16 Mbyte PROM, 16 Mbyte SRAM
+
+See README.leon3 for further details on Leon3 emulation.
+
+7. FPU implementation
+
+The simulator maps floating-point operations on the hosts floating point
+capabilities. This means that accuracy and generation of IEEE exceptions is
+host dependent.
