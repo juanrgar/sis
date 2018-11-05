@@ -1,0 +1,9 @@
+SIS (SPARC Instruction Simulator)
+=================================
+
+The purpose of this project is to develop a standalone version of SIS that
+could also include improvements, e.g. more GRLIB units implemented, profiling
+support, etc.
+
+All important code has been originally written by Jiri Gaisler.  Unfair
+attribution is not intended.
