@@ -152,7 +152,6 @@ main(argc, argv)
     for (i = 0; i < 64; i++)
 	cmdq[i] = 0;
     printf("\n SIS - SPARC instruction simulator %s,  copyright Jiri Gaisler 1995\n", sis_version);
-    printf (" Bug-reports to jiri@gaisler.se\n\n");
     while (stat < argc) {
 	if (argv[stat][0] == '-') {
 	    if (strcmp(argv[stat], "-v") == 0) {
