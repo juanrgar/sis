@@ -445,6 +445,7 @@ exec_cmd(struct pstate *sregs, const char *cmd)
 	    } else
 		len = 16;
 	    printf("\n");
+        printf("NOT IMPLEMENTED!\n");
 //	    dis_mem(daddr, len, &dinfo);
 	    printf("\n");
 	    daddr += len * 4;
@@ -1143,6 +1144,7 @@ sys_halt()
 int
 bfd_load (const char *fname)
 {
+    printf("NOT IMPLEMENTED!\n");
     /* asection       *section; */
     /* bfd            *pbfd; */
     /* const bfd_arch_info_type *arch; */
