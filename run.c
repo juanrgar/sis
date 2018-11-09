@@ -39,13 +39,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 #endif
 #endif
 
-#include "libiberty.h"
-#include "bfd.h"
-#include "gdb/callback.h"
-#include "gdb/remote-sim.h"
+/* #include "libiberty.h" */
+/* #include "bfd.h" */
+/* #include "gdb/callback.h" */
+/* #include "gdb/remote-sim.h" */
 #include "ansidecl.h"
-#include "run-sim.h"
-#include "version.h"
+/* #include "run-sim.h" */
+/* #include "version.h" */
 
 static void usage (int help);
 static void print_version (void);

@@ -23,8 +23,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include "sis.h"
-#include <dis-asm.h>
-#include "sim-config.h"
+// #include <dis-asm.h>
+// #include "sim-config.h"
 #include <inttypes.h>
 #include <sys/time.h>
 
@@ -36,7 +36,7 @@ int dumbio = 0;
 /* set if UARTs are connected to a tty, enable by default */
 int tty_setup = 1;
 
-struct disassemble_info dinfo;
+// struct disassemble_info dinfo;
 struct pstate   sregs;
 struct estate   ebase;
 struct evcell   evbuf[EVENT_MAX];
@@ -57,7 +57,7 @@ char            uart_dev1[128] = "";
 char            uart_dev2[128] = "";
 uint32		last_load_addr = 0;
 int		nouartrx = 0;
-host_callback 	*sim_callback;
+// host_callback 	*sim_callback;
 const struct memsys *ms = &erc32sys;
 int		cputype = 0;		/* 0 = erc32, 2 = leon2,3 = leon3 */
 int             sis_gdb_break;
@@ -330,9 +330,9 @@ errinj()
 	case 2: errtt = 0x63; break;
 	case 3: errtt = 0x64; break;
 	case 4: errtt = 0x65; break;
-	case 5: 
-	case 6: 
-	case 7: errftt = err; 
+	case 5:
+	case 6:
+	case 7: errftt = err;
 		break;
 	case 8: errmec = 1; break;
 	case 9: errmec = 2; break;
@@ -445,7 +445,7 @@ exec_cmd(struct pstate *sregs, const char *cmd)
 	    } else
 		len = 16;
 	    printf("\n");
-	    dis_mem(daddr, len, &dinfo);
+//	    dis_mem(daddr, len, &dinfo);
 	    printf("\n");
 	    daddr += len * 4;
 	} else if (strncmp(cmd1, "echo", clen) == 0) {
@@ -459,7 +459,7 @@ exec_cmd(struct pstate *sregs, const char *cmd)
 	        if (errper) {
 		    event(errinj, 0, (len = (random()%errper)));
 		    printf("Error injection started with period %d\n",len);
-	        } 
+	        }
 	     } else printf("Injected errors: %d\n",errcnt);
 #endif
 	} else if (strncmp(cmd1, "float", clen) == 0) {
@@ -499,7 +499,7 @@ exec_cmd(struct pstate *sregs, const char *cmd)
 		    if (j >= sregs->histlen)
 			j = 0;
 		    printf(" %8d ", sregs->histbuf[j].time);
-		    dis_mem(sregs->histbuf[j].addr, 1, &dinfo);
+//		    dis_mem(sregs->histbuf[j].addr, 1, &dinfo);
 		    j++;
 		}
 	    }
@@ -837,10 +837,10 @@ static void print_insn_sparc_sis(uint32 addr, struct disassemble_info *info)
     unsigned char           i[4];
 
     ms->sis_memory_read (addr, i, 4);
-    dinfo.buffer_vma = addr;
-    dinfo.buffer_length = 4;
-    dinfo.buffer = i;
-    print_insn_sparc(addr, info);
+//    dinfo.buffer_vma = addr;
+//    dinfo.buffer_length = 4;
+//    dinfo.buffer = i;
+    /* print_insn_sparc(addr, info); */
 }
 
 static void
@@ -854,10 +854,10 @@ disp_ctrl(sregs)
 	   sregs->psr, sregs->wim, sregs->tbr, sregs->y);
     ms->sis_memory_read (sregs->pc, (char *) &i, 4);
     printf ("\n  pc: %08X = %08X    ", sregs->pc, i);
-    print_insn_sparc_sis(sregs->pc, &dinfo);
+//    print_insn_sparc_sis(sregs->pc, &dinfo);
     ms->sis_memory_read (sregs->npc, (char *) &i, 4);
     printf ("\n npc: %08X = %08X    ", sregs->npc, i);
-    print_insn_sparc_sis(sregs->npc, &dinfo);
+//    print_insn_sparc_sis(sregs->npc, &dinfo);
     if (sregs->err_mode)
 	printf("\n IU in error mode");
     printf("\n\n");
@@ -1134,8 +1134,8 @@ sys_halt()
 
 #include <stdarg.h>
 
-#include "libiberty.h"
-#include "bfd.h"
+// #include "libiberty.h"
+// #include "bfd.h"
 
 #define min(A, B) (((A) < (B)) ? (A) : (B))
 #define LOAD_ADDRESS 0
@@ -1143,94 +1143,95 @@ sys_halt()
 int
 bfd_load (const char *fname)
 {
-    asection       *section;
-    bfd            *pbfd;
-    const bfd_arch_info_type *arch;
-    int            i;
+    /* asection       *section; */
+    /* bfd            *pbfd; */
+    /* const bfd_arch_info_type *arch; */
+    /* int            i; */
 
-    pbfd = bfd_openr(fname, 0);
+    /* pbfd = bfd_openr(fname, 0); */
 
-    if (pbfd == NULL) {
-	printf("open of %s failed\n", fname);
-	return -1;
-    }
-    if (!bfd_check_format(pbfd, bfd_object)) {
-	printf("file %s  doesn't seem to be an object file\n", fname);
-	return -1;
-    }
+    /* if (pbfd == NULL) { */
+	/* printf("open of %s failed\n", fname); */
+	/* return -1; */
+    /* } */
+    /* if (!bfd_check_format(pbfd, bfd_object)) { */
+	/* printf("file %s  doesn't seem to be an object file\n", fname); */
+	/* return -1; */
+    /* } */
 
-    arch = bfd_get_arch_info (pbfd);
-    if (sis_verbose)
-	printf("loading %s:", fname);
-    for (section = pbfd->sections; section; section = section->next) {
-	if (bfd_get_section_flags(pbfd, section) & SEC_ALLOC) {
-	    bfd_vma         section_address;
-	    unsigned long   section_size;
-	    const char     *section_name;
+    /* arch = bfd_get_arch_info (pbfd); */
+    /* if (sis_verbose) */
+	/* printf("loading %s:", fname); */
+    /* for (section = pbfd->sections; section; section = section->next) { */
+	/* if (bfd_get_section_flags(pbfd, section) & SEC_ALLOC) { */
+	/*     bfd_vma         section_address; */
+	/*     unsigned long   section_size; */
+	/*     const char     *section_name; */
 
-	    section_name = bfd_get_section_name(pbfd, section);
+	/*     section_name = bfd_get_section_name(pbfd, section); */
 
-	    section_address = bfd_get_section_lma(pbfd, section);
-	    /*
-	     * Adjust sections from a.out files, since they don't carry their
-	     * addresses with.
-	     */
-	    if (bfd_get_flavour(pbfd) == bfd_target_aout_flavour) {
-		if (strcmp (section_name, ".text") == 0)
-		    section_address = bfd_get_start_address (pbfd);
-		else if (strcmp (section_name, ".data") == 0) {
-		    /* Read the first 8 bytes of the data section.
-		       There should be the string 'DaTa' followed by
-		       a word containing the actual section address. */
-		    struct data_marker
-		    {
-			char signature[4];	/* 'DaTa' */
-			unsigned char sdata[4];	/* &sdata */
-		    } marker;
-		    bfd_get_section_contents (pbfd, section, &marker, 0,
-					      sizeof (marker));
-		    if (strncmp (marker.signature, "DaTa", 4) == 0)
-		      {
-			section_address = bfd_getb32 (marker.sdata);
-		      }
-		}
-	    }
+	/*     section_address = bfd_get_section_lma(pbfd, section); */
+	/*     /\* */
+	/*      * Adjust sections from a.out files, since they don't carry their */
+	/*      * addresses with. */
+	/*      *\/ */
+	/*     if (bfd_get_flavour(pbfd) == bfd_target_aout_flavour) { */
+	/* 	if (strcmp (section_name, ".text") == 0) */
+	/* 	    section_address = bfd_get_start_address (pbfd); */
+	/* 	else if (strcmp (section_name, ".data") == 0) { */
+	/* 	    /\* Read the first 8 bytes of the data section. */
+	/* 	       There should be the string 'DaTa' followed by */
+	/* 	       a word containing the actual section address. *\/ */
+	/* 	    struct data_marker */
+	/* 	    { */
+	/* 		char signature[4];	/\* 'DaTa' *\/ */
+	/* 		unsigned char sdata[4];	/\* &sdata *\/ */
+	/* 	    } marker; */
+	/* 	    bfd_get_section_contents (pbfd, section, &marker, 0, */
+	/* 				      sizeof (marker)); */
+	/* 	    if (strncmp (marker.signature, "DaTa", 4) == 0) */
+	/* 	      { */
+	/* 		section_address = bfd_getb32 (marker.sdata); */
+	/* 	      } */
+	/* 	} */
+	/*     } */
 
-	    section_size = bfd_section_size(pbfd, section);
+	/*     section_size = bfd_section_size(pbfd, section); */
 
-	    if (sis_verbose)
-		printf("\nsection %s at 0x%08lx (0x%lx bytes)",
-		       section_name, section_address, section_size);
+	/*     if (sis_verbose) */
+	/* 	printf("\nsection %s at 0x%08lx (0x%lx bytes)", */
+	/* 	       section_name, section_address, section_size); */
 
-	    /* Text, data or lit */
-	    if (bfd_get_section_flags(pbfd, section) & SEC_LOAD) {
-		file_ptr        fptr;
+	/*     /\* Text, data or lit *\/ */
+	/*     if (bfd_get_section_flags(pbfd, section) & SEC_LOAD) { */
+	/* 	file_ptr        fptr; */
 
-		fptr = 0;
+	/* 	fptr = 0; */
 
-		while (section_size > 0) {
-		    char            buffer[1024];
-		    int             count;
+	/* 	while (section_size > 0) { */
+	/* 	    char            buffer[1024]; */
+	/* 	    int             count; */
 
-		    count = min(section_size, 1024);
+	/* 	    count = min(section_size, 1024); */
 
-		    bfd_get_section_contents(pbfd, section, buffer, fptr, count);
+	/* 	    bfd_get_section_contents(pbfd, section, buffer, fptr, count); */
 
-		    for (i = 0; i < count; i++)
-			ms->sis_memory_write ((section_address + i) ^ EBT, &buffer[i], 1);
-		    section_address += count;
-		    fptr += count;
-		    section_size -= count;
-		}
-	    } else		/* BSS */
-		if (sis_verbose)
-		    printf("(not loaded)");
-	}
-    }
-    if (sis_verbose)
-	printf("\n");
+	/* 	    for (i = 0; i < count; i++) */
+	/* 		ms->sis_memory_write ((section_address + i) ^ EBT, &buffer[i], 1); */
+	/* 	    section_address += count; */
+	/* 	    fptr += count; */
+	/* 	    section_size -= count; */
+	/* 	} */
+	/*     } else		/\* BSS *\/ */
+	/* 	if (sis_verbose) */
+	/* 	    printf("(not loaded)"); */
+	/* } */
+    /* } */
+    /* if (sis_verbose) */
+	/* printf("\n"); */
 
-    return bfd_get_start_address (pbfd);
+    /* return bfd_get_start_address (pbfd); */
+    return 0;
 }
 
 double get_time (void)

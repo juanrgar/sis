@@ -25,8 +25,8 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include "sis.h"
-#include <dis-asm.h>
-#include "sim-config.h"
+/* #include <dis-asm.h> */
+/* #include "sim-config.h" */
 #include <inttypes.h>
 
 #define	VAL(x)	strtol(x,(char **)NULL,0)
@@ -81,7 +81,7 @@ run_sim(sregs, icount, dis)
 			}
 			if (dis) {
 			    printf(" %8" PRIu64 " ", ebase.simtime);
-			    dis_mem(sregs->pc, 1, &dinfo);
+			    /* dis_mem(sregs->pc, 1, &dinfo); */
 			}
 			if ((sregs->bptnum) && (sregs->bphit = check_bpt(sregs)))
 			    icount = 0;
@@ -235,12 +235,12 @@ main(argc, argv)
     sregs.freq = freq;
     printf("\n");
 
-    INIT_DISASSEMBLE_INFO(dinfo, stdout, (fprintf_ftype) fprintf);
-#ifdef HOST_LITTLE_ENDIAN
-    dinfo.endian = BFD_ENDIAN_LITTLE;
-#else
-    dinfo.endian = BFD_ENDIAN_BIG;
-#endif
+    /* INIT_DISASSEMBLE_INFO(dinfo, stdout, (fprintf_ftype) fprintf); */
+/* #ifdef HOST_LITTLE_ENDIAN */
+/*     dinfo.endian = BFD_ENDIAN_LITTLE; */
+/* #else */
+/*     dinfo.endian = BFD_ENDIAN_BIG; */
+/* #endif */
 
 #ifdef F_GETFL
     termsave = fcntl(0, F_GETFL, 0);
@@ -310,7 +310,7 @@ main(argc, argv)
 	    printf("IU in error mode (%d)\n", sregs.trap);
 	    stat = 0;
 	    printf(" %8" PRIu64 " ", ebase.simtime);
-	    dis_mem(sregs.pc, 1, &dinfo);
+	    /* dis_mem(sregs.pc, 1, &dinfo); */
 	    break;
 	case WPT_HIT:
 	    printf("watchpoint at 0x%08x reached, pc = 0x%08x\n",
@@ -328,4 +328,3 @@ main(argc, argv)
     }
     return 0;
 }
-

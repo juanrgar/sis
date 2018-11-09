@@ -29,7 +29,7 @@
 #include <sys/file.h>
 #include <unistd.h>
 #include "sis.h"
-#include "sim-config.h"
+/* #include "sim-config.h" */
 
 /* MEC registers */
 #define MEC_START 	0x01f80000
@@ -344,7 +344,7 @@ decode_ersr()
 	} else
 	    mec_irq(1);
     }
-    if (mec_ersr & 0x20) { 
+    if (mec_ersr & 0x20) {
 	if (!(mec_mcr & 0x2000)) {
 	    if (mec_mcr & 0x4000) {
 	        sys_reset();
@@ -567,7 +567,7 @@ chk_irq()
     if (itmp != 0) {
 	for (i = 15; i > 0; i--) {
 	    if (((itmp >> i) & 1) != 0) {
-		if ((sis_verbose) && (i > old_irl)) 
+		if ((sis_verbose) && (i > old_irl))
 		    printf("IU irl: %d\n", i);
 		ext_irl = i;
 	        set_int(i, mec_intack, i);
@@ -692,7 +692,7 @@ mec_read(addr, asi, data)
 	if (find == 0)
 	    strcpy(fname, "simload");
 	find = bfd_load(fname);
- 	if (find == -1) 
+ 	if (find == -1)
 	    *data = 0;
 	else
 	    *data = 1;
@@ -954,9 +954,7 @@ restore_stdio()
 #define DO_STDIO_READ( _fd_, _buf_, _len_ )          \
 	( dumbio || nouartrx \
 	? (0) /* no bytes read, no delay */   \
-	: (_fd_) == 1 && sim_callback ? \
-	sim_callback->read_stdin (sim_callback, _buf_, _len_) :  \
-	read( _fd_, _buf_, _len_ ) )
+      : read( _fd_, _buf_, _len_ ) )
 
 static void
 port_init()
@@ -986,8 +984,8 @@ port_init()
     if (f1in)
 	ifd1 = fileno(f1in);
     if (ifd1 == 0) {
-        if (sim_callback && !sim_callback->isatty (sim_callback, ifd1))
-	    tty_setup = 0;
+        /* if (sim_callback && !sim_callback->isatty (sim_callback, ifd1)) */
+	    /* tty_setup = 0; */
 	if (sis_verbose)
 	    printf("serial port A on stdin/stdout\n");
         if (!dumbio) {
@@ -1191,9 +1189,9 @@ write_uart(addr, data)
 	        wbufa[wnuma++] = c;
 	    else {
 	        while (wnuma) {
-		    if (ofd1 == 1 && sim_callback)
-			wnuma -= sim_callback->write_stdout (sim_callback, wbufa, wnuma);
-		    else
+		    /* if (ofd1 == 1 && sim_callback) */
+			/* wnuma -= sim_callback->write_stdout (sim_callback, wbufa, wnuma); */
+		    /* else */
 			wnuma -= fwrite (wbufa, 1, wnuma, f1out);
 		}
 		wbufa[wnuma++] = c;
@@ -1219,9 +1217,9 @@ write_uart(addr, data)
 		wbufb[wnumb++] = c;
 	    else {
 		while (wnumb) {
-		    if (ofd1 == 1 && sim_callback)
-			wnumb -= sim_callback->write_stdout (sim_callback, wbufb, wnumb);
-		    else
+		    /* if (ofd1 == 1 && sim_callback) */
+			/* wnumb -= sim_callback->write_stdout (sim_callback, wbufb, wnumb); */
+		    /* else */
 			wnumb -= fwrite (wbufb, 1, wnumb, f2out);
 		}
 		wbufb[wnumb++] = c;
@@ -1262,17 +1260,17 @@ static void
 flush_uart()
 {
     while (wnuma && f1open) {
-	if (ofd1 == 1 && sim_callback) {
-	    wnuma -= sim_callback->write_stdout (sim_callback, wbufa, wnuma);
-	    sim_callback->flush_stdout (sim_callback);
-	} else
+	/* if (ofd1 == 1 && sim_callback) { */
+	/*     wnuma -= sim_callback->write_stdout (sim_callback, wbufa, wnuma); */
+	/*     sim_callback->flush_stdout (sim_callback); */
+	/* } else */
 	    wnuma -= fwrite (wbufa, 1, wnuma, f1out);
     }
     while (wnumb && f2open) {
-	if (ofd2 == 1 && sim_callback) {
-	    wnuma -= sim_callback->write_stdout (sim_callback, wbufb, wnuma);
-	    sim_callback->flush_stdout (sim_callback);
-	} else
+	/* if (ofd2 == 1 && sim_callback) { */
+	/*     wnuma -= sim_callback->write_stdout (sim_callback, wbufb, wnuma); */
+	/*     sim_callback->flush_stdout (sim_callback); */
+	/* } else */
 	wnumb -= fwrite (wbufb, 1, wnumb, f2out);
     }
 }
@@ -1283,10 +1281,10 @@ static void
 uarta_tx()
 {
     while (f1open) {
-	if (ofd1 == 1 && sim_callback)
-	    while (sim_callback->write_stdout (sim_callback, &uarta_sreg, 1) != 1)
-		continue;
-	else
+	/* if (ofd1 == 1 && sim_callback) */
+	/*     while (sim_callback->write_stdout (sim_callback, &uarta_sreg, 1) != 1) */
+	/* 	continue; */
+	/* else */
 	    while (fwrite (&uarta_sreg, 1, 1, f1out) != 1)
 		continue;
     }
@@ -1304,10 +1302,10 @@ static void
 uartb_tx()
 {
     while (f2open) {
-	if (ofd2 == 1 && sim_callback)
-	    while (sim_callback->write_stdout (sim_callback, &uarta_sreg, 1) != 1)
-		continue;
-	else
+	/* if (ofd2 == 1 && sim_callback) */
+	/*     while (sim_callback->write_stdout (sim_callback, &uarta_sreg, 1) != 1) */
+	/* 	continue; */
+	/* else */
 	    while (fwrite(&uartb_sreg, 1, 1, f2out) != 1)
 		continue;
     }
@@ -1664,18 +1662,18 @@ memory_read (uint32 addr, uint32 *data, int32 sz, int32 *ws)
 #ifdef ERA
 
     } else if (era) {
-    	if ((addr < 0x100000) || 
+    	if ((addr < 0x100000) ||
 	    ((addr>= 0x80000000) && (addr < 0x80100000))) {
 	    memcpy (data, &romb[addr & ROM_MASK & ~3], 4);
 	    *ws = 4;
 	    return 0;
-	} else if ((addr >= 0x10000000) && 
+	} else if ((addr >= 0x10000000) &&
 		   (addr < (0x10000000 + (512 << (mec_iocr & 0x0f)))) &&
 		   (mec_iocr & 0x10))  {
 	    *data = erareg;
 	    return 0;
 	}
-	
+
     } else  if (addr < mem_romsz) {
 	memcpy (data, &romb[addr & ~3], 4);
 	*ws = mem_romr_ws;
@@ -1772,13 +1770,13 @@ memory_write (uint32 addr, uint32 *data, int32 sz, int32 *ws)
 #ifdef ERA
 
     } else if (era) {
-    	if ((erareg & 2) && 
+    	if ((erareg & 2) &&
 	((addr < 0x100000) || ((addr >= 0x80000000) && (addr < 0x80100000)))) {
 	    addr &= ROM_MASK;
 	    *ws = sz == 3 ? 8 : 4;
 	    store_bytes (romb, addr, data, sz, ws);
             return 0;
-	} else if ((addr >= 0x10000000) && 
+	} else if ((addr >= 0x10000000) &&
 		   (addr < (0x10000000 + (512 << (mec_iocr & 0x0f)))) &&
 		   (mec_iocr & 0x10))  {
 	    erareg = *data & 0x0e;
@@ -1786,7 +1784,7 @@ memory_write (uint32 addr, uint32 *data, int32 sz, int32 *ws)
 	}
 
     } else if ((addr < mem_romsz) && (mec_memcfg & 0x10000) && (wrp) &&
-               (((mec_memcfg & 0x20000) && (sz > 1)) || 
+               (((mec_memcfg & 0x20000) && (sz > 1)) ||
 		(!(mec_memcfg & 0x20000) && (sz == 0)))) {
 
 	*ws = mem_romw_ws + 1;
@@ -1797,7 +1795,7 @@ memory_write (uint32 addr, uint32 *data, int32 sz, int32 *ws)
 
 #else
     } else if ((addr < mem_romsz) && (mec_memcfg & 0x10000) && (wrp) &&
-               (((mec_memcfg & 0x20000) && (sz > 1)) || 
+               (((mec_memcfg & 0x20000) && (sz > 1)) ||
 		(!(mec_memcfg & 0x20000) && (sz == 0)))) {
 
 	*ws = mem_romw_ws + 1;
@@ -1809,7 +1807,7 @@ memory_write (uint32 addr, uint32 *data, int32 sz, int32 *ws)
 #endif
 
     }
-	
+
     *ws = MEM_EX_WS;
     asi = (sregs.psr & 0x080) ? 11 : 10;
     set_sfsr(UIMP_ACC, addr, asi, 0);
@@ -1834,7 +1832,7 @@ get_mem_ptr(addr, size)
     }
 
 #ifdef ERA
-      else if ((era) && ((addr <0x100000) || 
+      else if ((era) && ((addr <0x100000) ||
 	((addr >= (unsigned) 0x80000000) && ((addr + size) < (unsigned) 0x80100000)))) {
 	return &romb[addr & ROM_MASK];
     }

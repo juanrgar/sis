@@ -33,7 +33,7 @@
 #include <unistd.h>
 #include "sis.h"
 #include "grlib.h"
-#include "sim-config.h"
+/* #include "sim-config.h" */
 
 /* APB registers */
 #define APBSTART	0x80000000
@@ -168,7 +168,7 @@ static unsigned char *get_mem_ptr (uint32 addr, uint32 size);
 static void store_bytes (unsigned char *mem, uint32 waddr,
 			 uint32 * data, int sz, int32 * ws);
 
-static host_callback *callback;
+/* static host_callback *callback; */
 
 
 /* One-time init. */
@@ -176,7 +176,7 @@ static host_callback *callback;
 static void
 init_sim (void)
 {
-  callback = sim_callback;
+  /* callback = sim_callback; */
   grlib_init ();
   mem_init ();
   port_init ();
@@ -481,9 +481,7 @@ restore_stdio (void)
 #define DO_STDIO_READ( _fd_, _buf_, _len_ )          \
 		( dumbio || nouartrx \
 		? (0) /* no bytes read, no delay */   \
-		: (_fd_) == 1 && callback ? \
-		callback->read_stdin (callback, _buf_, _len_) :  \
-		read( _fd_, _buf_, _len_ ) )
+          : read( _fd_, _buf_, _len_ ) )
 
 static void
 port_init (void)
@@ -505,8 +503,8 @@ port_init (void)
     ifd1 = fileno (f1in);
   if (ifd1 == 0)
     {
-      if (callback && !callback->isatty (callback, ifd1))
-	tty_setup = 0;
+    /*   if (callback && !callback->isatty (callback, ifd1)) */
+	/* tty_setup = 0; */
       if (sis_verbose)
 	printf ("serial port A on stdin/stdout\n");
       if (!dumbio)
@@ -571,8 +569,8 @@ grlib_read_uart (uint32 addr)
 	}
 #else
       tmp = uarta_data;
-      uarta_data &= ~UART_DR;
-      uart_stat_reg &= ~UARTA_DR;
+      /* uarta_data &= ~UART_DR; */
+      /* uart_stat_reg &= ~UARTA_DR; */
       return tmp;
 #endif
 #else
@@ -636,9 +634,9 @@ grlib_write_uart (uint32 addr, uint32 data)
 	    {
 	      while (wnuma)
 		{
-		  if (ofd1 == 1 && callback)
-		    wnuma -= callback->write_stdout (callback, wbufa, wnuma);
-		  else
+		  /* if (ofd1 == 1 && callback) */
+		  /*   wnuma -= callback->write_stdout (callback, wbufa, wnuma); */
+		  /* else */
 		    wnuma -= fwrite (wbufa, 1, wnuma, f1out);
 		}
 	      wbufa[wnuma++] = c;
@@ -677,12 +675,12 @@ flush_uart (void)
 {
   while (wnuma && f1open)
     {
-      if (ofd1 == 1 && callback)
-	{
-	  wnuma -= callback->write_stdout (callback, wbufa, wnuma);
-	  callback->flush_stdout (callback);
-	}
-      else
+    /*   if (ofd1 == 1 && callback) */
+	/* { */
+	/*   wnuma -= callback->write_stdout (callback, wbufa, wnuma); */
+	/*   callback->flush_stdout (callback); */
+	/* } */
+    /*   else */
 	wnuma -= fwrite (wbufa, 1, wnuma, f1out);
     }
 }
@@ -692,10 +690,10 @@ uarta_tx (void)
 {
   while (f1open)
     {
-      if (ofd1 == 1 && callback)
-	while (callback->write_stdout (callback, &uarta_sreg, 1) != 1)
-	  continue;
-      else
+    /*   if (ofd1 == 1 && callback) */
+	/* while (callback->write_stdout (callback, &uarta_sreg, 1) != 1) */
+	/*   continue; */
+    /*   else */
 	while (fwrite (&uarta_sreg, 1, 1, f1out) != 1)
 	  continue;
     }

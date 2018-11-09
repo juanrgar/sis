@@ -15,9 +15,9 @@
 
 #include "config.h"
 #include "ansidecl.h"
-#include "gdb/callback.h"
-#include "gdb/remote-sim.h"
-#include <sim-config.h>
+// #include "gdb/callback.h"
+// #include "gdb/remote-sim.h"
+// #include <sim-config.h>
 #include <stdint.h>
 
 #ifdef WORDS_BIGENDIAN
@@ -228,7 +228,7 @@ extern void	sys_halt (void);
 extern int	bfd_load (const char *fname);
 extern double	get_time (void);
 extern int	nouartrx;
-extern		host_callback *sim_callback;
+// extern		host_callback *sim_callback;
 extern int	dumbio;
 extern int	tty_setup;
 extern int      cputype;
