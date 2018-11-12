@@ -1,0 +1,154 @@
+creating bfdver.h
+rm -f elf32-target.h
+/usr/bin/sed -e s/NN/32/g < ./elfxx-target.h > elf32-target.new
+mv -f elf32-target.new elf32-target.h
+rm -f elf64-target.h
+/usr/bin/sed -e s/NN/64/g < ./elfxx-target.h > elf64-target.new
+mv -f elf64-target.new elf64-target.h
+rm -f targmatch.h
+/usr/bin/sed -f ./targmatch.sed < ./config.bfd > targmatch.new
+mv -f targmatch.new targmatch.h
+Making info in doc
+gcc -o chw$$  \
+	    -I.. -I./.. -I./../../include -I./../../intl -I../../intl ./chew.c; \
+	/bin/sh ./../../move-if-change \
+	  chw$$ chew; \
+	touch chew.stamp
+./chew -f ./doc.str < ./../aoutx.h >aoutx.tmp
+test -e aoutx.texi || test ! -f ./aoutx.texi || cp -p ./aoutx.texi .
+/bin/sh ./../../move-if-change aoutx.tmp aoutx.texi
+touch aoutx.stamp
+./chew -f ./doc.str < ./../archive.c >archive.tmp
+test -e archive.texi || test ! -f ./archive.texi || cp -p ./archive.texi .
+/bin/sh ./../../move-if-change archive.tmp archive.texi
+touch archive.stamp
+./chew -f ./doc.str < ./../archures.c >archures.tmp
+test -e archures.texi || test ! -f ./archures.texi || cp -p ./archures.texi .
+/bin/sh ./../../move-if-change archures.tmp archures.texi
+touch archures.stamp
+./chew -f ./doc.str < ./../bfd.c >bfd.tmp
+test -e bfdt.texi || test ! -f ./bfdt.texi || cp -p ./bfdt.texi .
+/bin/sh ./../../move-if-change bfd.tmp bfdt.texi
+touch bfdt.stamp
+./chew -f ./doc.str < ./../cache.c >cache.tmp
+test -e cache.texi || test ! -f ./cache.texi || cp -p ./cache.texi .
+/bin/sh ./../../move-if-change cache.tmp cache.texi
+touch cache.stamp
+./chew -f ./doc.str < ./../coffcode.h >coffcode.tmp
+test -e coffcode.texi || test ! -f ./coffcode.texi || cp -p ./coffcode.texi .
+/bin/sh ./../../move-if-change coffcode.tmp coffcode.texi
+touch coffcode.stamp
+./chew -f ./doc.str < ./../corefile.c >core.tmp
+test -e core.texi || test ! -f ./core.texi || cp -p ./core.texi .
+/bin/sh ./../../move-if-change core.tmp core.texi
+touch core.stamp
+./chew -f ./doc.str < ./../elf.c >elf.tmp
+test -e elf.texi || test ! -f ./elf.texi || cp -p ./elf.texi .
+/bin/sh ./../../move-if-change elf.tmp elf.texi
+touch elf.stamp
+./chew -f ./doc.str < ./../elfcode.h >elfcode.tmp
+test -e elfcode.texi || test ! -f ./elfcode.texi || cp -p ./elfcode.texi .
+/bin/sh ./../../move-if-change elfcode.tmp elfcode.texi
+touch elfcode.stamp
+./chew -f ./doc.str < ./../format.c >format.tmp
+test -e format.texi || test ! -f ./format.texi || cp -p ./format.texi .
+/bin/sh ./../../move-if-change format.tmp format.texi
+touch format.stamp
+./chew -f ./doc.str < ./../libbfd.c >libbfd.tmp
+test -e libbfd.texi || test ! -f ./libbfd.texi || cp -p ./libbfd.texi .
+/bin/sh ./../../move-if-change libbfd.tmp libbfd.texi
+touch libbfd.stamp
+./chew -f ./doc.str < ./../bfdwin.c >bfdwin.tmp
+test -e bfdwin.texi || test ! -f ./bfdwin.texi || cp -p ./bfdwin.texi .
+/bin/sh ./../../move-if-change bfdwin.tmp bfdwin.texi
+touch bfdwin.stamp
+./chew -f ./doc.str < ./../bfdio.c >bfdio.tmp
+test -e bfdio.texi || test ! -f ./bfdio.texi || cp -p ./bfdio.texi .
+/bin/sh ./../../move-if-change bfdio.tmp bfdio.texi
+touch bfdio.stamp
+./chew -f ./doc.str < ./../opncls.c >opncls.tmp
+test -e opncls.texi || test ! -f ./opncls.texi || cp -p ./opncls.texi .
+/bin/sh ./../../move-if-change opncls.tmp opncls.texi
+touch opncls.stamp
+./chew -f ./doc.str < ./../reloc.c >reloc.tmp
+test -e reloc.texi || test ! -f ./reloc.texi || cp -p ./reloc.texi .
+/bin/sh ./../../move-if-change reloc.tmp reloc.texi
+touch reloc.stamp
+./chew -f ./doc.str < ./../section.c >section.tmp
+test -e section.texi || test ! -f ./section.texi || cp -p ./section.texi .
+/bin/sh ./../../move-if-change section.tmp section.texi
+touch section.stamp
+./chew -f ./doc.str < ./../syms.c >syms.tmp
+test -e syms.texi || test ! -f ./syms.texi || cp -p ./syms.texi .
+/bin/sh ./../../move-if-change syms.tmp syms.texi
+touch syms.stamp
+./chew -f ./doc.str < ./../targets.c >targets.tmp
+test -e targets.texi || test ! -f ./targets.texi || cp -p ./targets.texi .
+/bin/sh ./../../move-if-change targets.tmp targets.texi
+touch targets.stamp
+./chew -f ./doc.str < ./../init.c >init.tmp
+test -e init.texi || test ! -f ./init.texi || cp -p ./init.texi .
+/bin/sh ./../../move-if-change init.tmp init.texi
+touch init.stamp
+./chew -f ./doc.str < ./../hash.c >hash.tmp
+test -e hash.texi || test ! -f ./hash.texi || cp -p ./hash.texi .
+/bin/sh ./../../move-if-change hash.tmp hash.texi
+touch hash.stamp
+./chew -f ./doc.str < ./../linker.c >linker.tmp
+test -e linker.texi || test ! -f ./linker.texi || cp -p ./linker.texi .
+/bin/sh ./../../move-if-change linker.tmp linker.texi
+touch linker.stamp
+./chew -f ./doc.str < ./../mmo.c >mmo.tmp
+test -e mmo.texi || test ! -f ./mmo.texi || cp -p ./mmo.texi .
+/bin/sh ./../../move-if-change mmo.tmp mmo.texi
+touch mmo.stamp
+Making info in po
+( if test 'x.' != 'x.'; then \
+	    posrcprefix='../'; \
+	  else \
+	    posrcprefix="../"; \
+	  fi; \
+	  rm -f SRC-POTFILES-t SRC-POTFILES \
+	    && (sed -e '/^#/d' \
+	            -e '/^[ 	]*$/d' \
+		    -e "s@.*@	$posrcprefix& \\\\@" < ./SRC-POTFILES.in \
+		| sed -e '$s/\\$//') > SRC-POTFILES-t \
+	    && chmod a-w SRC-POTFILES-t \
+	    && mv SRC-POTFILES-t SRC-POTFILES )
+( rm -f BLD-POTFILES-t BLD-POTFILES \
+	    && (sed -e '/^#/d' \
+	            -e '/^[ 	]*$/d' \
+		    -e "s@.*@	../& \\\\@" < ./BLD-POTFILES.in \
+		| sed -e '$s/\\$//') > BLD-POTFILES-t \
+	    && chmod a-w BLD-POTFILES-t \
+	    && mv BLD-POTFILES-t BLD-POTFILES )
+cd .. \
+	  && CONFIG_FILES=po/Makefile.in:po/Make-in \
+	     CONFIG_HEADERS= /bin/sh ./config.status
+config.status: creating po/Makefile.in
+config.status: executing depfiles commands
+config.status: executing libtool commands
+config.status: executing default-1 commands
+config.status: executing bfd_stdint.h commands
+Configured with: --prefix=/Applications/Xcode.app/Contents/Developer/usr --with-gxx-include-dir=/usr/include/c++/4.2.1
+config.status: executing default commands
+make[1]: Nothing to be done for `info'.
+make[1]: Nothing to be done for `info-am'.
+/Applications/Xcode.app/Contents/Developer/usr/bin/make  all-recursive
+Making all in doc
+make[2]: Nothing to be done for `all'.
+Making all in po
+make[2]: Nothing to be done for `all'.
+rm -f bfd-tmp.h
+cp bfd-in3.h bfd-tmp.h
+/bin/sh ./../move-if-change bfd-tmp.h bfd.h
+rm -f bfd-tmp.h
+touch stmp-bfd-h
+/bin/sh ./libtool --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I. -I. -I./../include  -DHAVE_sparc_aout_sunos_be_vec -DHAVE_plugin_vec  -DBINDIR='"/usr/local/bin"'  -W -Wall -Wstrict-prototypes -Wmissing-prototypes -Wshadow -I./../zlib -g -O2 -MT archive.lo -MD -MP -MF .deps/archive.Tpo -c -o archive.lo archive.c
+libtool: Version mismatch error.  This is libtool 2.4.6, but the
+libtool: definition of this LT_INIT comes from libtool 2.2.7a.
+libtool: You should recreate aclocal.m4 with macros from libtool 2.4.6
+libtool: and run autoconf again.
+make[2]: *** [archive.lo] Error 63
+make[1]: *** [all-recursive] Error 1
+make: *** [all] Error 2
