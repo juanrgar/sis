@@ -1,4 +1,8 @@
 *.o
+*.lo
+*.a
+*.la
 Makefile
 *.in
+*.stamp
 sis
