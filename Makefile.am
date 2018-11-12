@@ -12,3 +12,8 @@ sis_SOURCES = \
 
 sis_CPPFLAGS = -I$(top_srcdir)/include
 sis_LDFLAGS = -lreadline
+
+all-local:
+	cd zlib && ./configure && make
+	cd libiberty && ./configure && make
+	cd bfd && ./configure --target=sparc && make
