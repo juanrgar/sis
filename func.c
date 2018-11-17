@@ -445,8 +445,7 @@ exec_cmd(struct pstate *sregs, const char *cmd)
 	    } else
 		len = 16;
 	    printf("\n");
-        printf("NOT IMPLEMENTED!\n");
-//	    dis_mem(daddr, len, &dinfo);
+	    dis_mem(daddr, len, &dinfo);
 	    printf("\n");
 	    daddr += len * 4;
 	} else if (strncmp(cmd1, "echo", clen) == 0) {
@@ -500,7 +499,7 @@ exec_cmd(struct pstate *sregs, const char *cmd)
 		    if (j >= sregs->histlen)
 			j = 0;
 		    printf(" %8d ", sregs->histbuf[j].time);
-//		    dis_mem(sregs->histbuf[j].addr, 1, &dinfo);
+		    dis_mem(sregs->histbuf[j].addr, 1, &dinfo);
 		    j++;
 		}
 	    }

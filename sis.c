@@ -81,7 +81,7 @@ run_sim(sregs, icount, dis)
 			}
 			if (dis) {
 			    printf(" %8" PRIu64 " ", ebase.simtime);
-			    /* dis_mem(sregs->pc, 1, &dinfo); */
+			    dis_mem(sregs->pc, 1, &dinfo);
 			}
 			if ((sregs->bptnum) && (sregs->bphit = check_bpt(sregs)))
 			    icount = 0;
@@ -309,7 +309,7 @@ main(argc, argv)
 	    printf("IU in error mode (%d)\n", sregs.trap);
 	    stat = 0;
 	    printf(" %8" PRIu64 " ", ebase.simtime);
-	    /* dis_mem(sregs.pc, 1, &dinfo); */
+	    dis_mem(sregs.pc, 1, &dinfo);
 	    break;
 	case WPT_HIT:
 	    printf("watchpoint at 0x%08x reached, pc = 0x%08x\n",
