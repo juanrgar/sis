@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include "sis.h"
-/* #include <dis-asm.h> */
+#include <dis-asm.h>
 /* #include "sim-config.h" */
 #include <inttypes.h>
 
@@ -234,7 +234,7 @@ main(argc, argv)
     sregs.freq = freq;
     printf("\n");
 
-    /* INIT_DISASSEMBLE_INFO(dinfo, stdout, (fprintf_ftype) fprintf); */
+    INIT_DISASSEMBLE_INFO(dinfo, stdout, (fprintf_ftype) fprintf);
 /* #ifdef HOST_LITTLE_ENDIAN */
 /*     dinfo.endian = BFD_ENDIAN_LITTLE; */
 /* #else */

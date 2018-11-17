@@ -22,6 +22,7 @@ sis_SOURCES = \
 			  leon3.c \
 			  sis.c
 
+AM_CFLAGS = -g -O0
 sis_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/libiberty -I$(top_srcdir)/bfd
 sis_LDFLAGS = -lreadline
 sis_LDADD = $(top_srcdir)/zlib/libz.a $(top_srcdir)/libiberty/libiberty.a $(top_srcdir)/bfd/libbfd.a $(top_srcdir)/opcodes/libopcodes.a
