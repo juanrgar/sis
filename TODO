@@ -1,4 +1,4 @@
-* Include BFD so that bfd_load works.
+* Include BFD so that bfd_load works. [CHECK]
 * Uncomment print_* functions.
 * Uncomment UART stuff.
 * Remove references to host_callback and other structures from

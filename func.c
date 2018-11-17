@@ -841,7 +841,7 @@ static void print_insn_sparc_sis(uint32 addr, struct disassemble_info *info)
     dinfo.buffer_vma = addr;
     dinfo.buffer_length = 4;
     dinfo.buffer = i;
-    /* print_insn_sparc(addr, info); */
+    print_insn_sparc(addr, info);
 }
 
 static void
