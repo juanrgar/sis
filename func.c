@@ -36,7 +36,7 @@ int dumbio = 0;
 /* set if UARTs are connected to a tty, enable by default */
 int tty_setup = 1;
 
-// struct disassemble_info dinfo;
+struct disassemble_info dinfo;
 struct pstate   sregs;
 struct estate   ebase;
 struct evcell   evbuf[EVENT_MAX];
@@ -838,9 +838,9 @@ static void print_insn_sparc_sis(uint32 addr, struct disassemble_info *info)
     unsigned char           i[4];
 
     ms->sis_memory_read (addr, i, 4);
-//    dinfo.buffer_vma = addr;
-//    dinfo.buffer_length = 4;
-//    dinfo.buffer = i;
+    dinfo.buffer_vma = addr;
+    dinfo.buffer_length = 4;
+    dinfo.buffer = i;
     /* print_insn_sparc(addr, info); */
 }
 
@@ -855,10 +855,10 @@ disp_ctrl(sregs)
 	   sregs->psr, sregs->wim, sregs->tbr, sregs->y);
     ms->sis_memory_read (sregs->pc, (char *) &i, 4);
     printf ("\n  pc: %08X = %08X    ", sregs->pc, i);
-//    print_insn_sparc_sis(sregs->pc, &dinfo);
+    print_insn_sparc_sis(sregs->pc, &dinfo);
     ms->sis_memory_read (sregs->npc, (char *) &i, 4);
     printf ("\n npc: %08X = %08X    ", sregs->npc, i);
-//    print_insn_sparc_sis(sregs->npc, &dinfo);
+    print_insn_sparc_sis(sregs->npc, &dinfo);
     if (sregs->err_mode)
 	printf("\n IU in error mode");
     printf("\n\n");
