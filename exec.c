@@ -405,6 +405,8 @@ wpmask(uint32 op3)
       case 2: return(1);  /* half-word */
       case 3: return(7);  /* double word */
     }
+
+    return 0;
 }
 
 int
@@ -415,10 +417,10 @@ dispatch_instruction(sregs)
     uint32          cwp, op, op2, op3, asi, rd, cond, rs1,
                     rs2;
     uint32          ldep, icc;
-    int32           operand1, operand2, *rdd, result, eicc,
+    int32           operand1, operand2, result, eicc,
                     new_cwp;
-    int32           pc, npc, data, address, ws, mexc, fcc;
-    int32	    ddata[2];
+    uint32          *rdd, ddata[2], data;
+    int32           pc, npc, address, ws, mexc, fcc;
 
     sregs->ninst++;
     cwp = ((sregs->psr & PSR_CWP) << 4);
@@ -1224,7 +1226,7 @@ dispatch_instruction(sregs)
 	if (op3 & 4) {
 	    sregs->icnt = T_ST;	/* Set store instruction count */
 	    if (sregs->wpwnum) {
-	       if (sregs->wphit = check_wpw(sregs, address, wpmask(op3))) {
+	       if ((sregs->wphit = check_wpw(sregs, address, wpmask(op3)))) {
 	           sregs->trap = WPT_TRAP;
 		   break;
 	       }
@@ -1235,7 +1237,7 @@ dispatch_instruction(sregs)
 	} else {
 	    sregs->icnt = T_LD;	/* Set load instruction count */
 	    if (sregs->wprnum) {
-	       if (sregs->wphit = check_wpr(sregs, address, wpmask(op3))) {
+	       if ((sregs->wphit = check_wpr(sregs, address, wpmask(op3)))) {
 	           sregs->trap = WPT_TRAP;
 		   break;
 	       }

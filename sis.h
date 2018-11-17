@@ -271,7 +271,7 @@ struct memsys {
 			     int32 sz, int32 *ws);
     int	        (*sis_memory_write) (uint32 addr,
 				  const unsigned char *data, uint32 length);
-    int	        (*sis_memory_read) (uint32 addr, char *data,
+    int	        (*sis_memory_read) (uint32 addr, unsigned char *data,
 				 uint32 length);
     void	(*boot_init) (void);
 };

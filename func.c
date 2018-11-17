@@ -408,7 +408,7 @@ exec_cmd(struct pstate *sregs, const char *cmd)
 	} else if (strncmp(cmd1, "-bp", clen) == 0) {
 	    if ((cmd1 = strtok(NULL, " \t\n\r")) != NULL) {
 		i = VAL(cmd1) - 1;
-		if ((i >= 0) && (i < sregs->bptnum)) {
+		if (i < sregs->bptnum) {
 		    printf("deleted breakpoint %d at 0x%08x\n", i + 1,
 			   sregs->bpts[i]);
 		    for (; i < sregs->bptnum - 1; i++) {
@@ -527,7 +527,7 @@ exec_cmd(struct pstate *sregs, const char *cmd)
 		daddr = VAL(cmd1);
 	    if ((cmd2 = strtok(NULL, " \t\n\r")) != NULL)
 		len = VAL(cmd2);
-	    ms->sis_memory_write (daddr, (char *) &len, 4);
+	    ms->sis_memory_write (daddr, (unsigned char *) &len, 4);
 	} else if (strncmp(cmd1, "perf", clen) == 0) {
 	    cmd1 = strtok(NULL, " \t\n\r");
 	    if ((cmd1 != NULL) &&
@@ -641,7 +641,7 @@ exec_cmd(struct pstate *sregs, const char *cmd)
 	} else if (strncmp(cmd1, "-wpr", clen) == 0) {
 	    if ((cmd1 = strtok(NULL, " \t\n\r")) != NULL) {
 		i = VAL(cmd1) - 1;
-		if ((i >= 0) && (i < sregs->wprnum)) {
+		if (i < sregs->wprnum) {
 		    printf("deleted read watchpoint %d at 0x%08x\n", i + 1,
 			   sregs->wprs[i]);
 		    for (; i < sregs->wprnum - 1; i++) {
@@ -661,7 +661,7 @@ exec_cmd(struct pstate *sregs, const char *cmd)
 	} else if (strncmp(cmd1, "-wpw", clen) == 0) {
 	    if ((cmd1 = strtok(NULL, " \t\n\r")) != NULL) {
 		i = VAL(cmd1) - 1;
-		if ((i >= 0) && (i < sregs->wpwnum)) {
+		if (i < sregs->wpwnum) {
 		    printf("deleted write watchpoint %d at 0x%08x\n", i + 1,
 			   sregs->wpws[i]);
 		    for (; i < sregs->wpwnum - 1; i++) {
@@ -853,10 +853,10 @@ disp_ctrl(sregs)
 
     printf("\n psr: %08X   wim: %08X   tbr: %08X   y: %08X\n",
 	   sregs->psr, sregs->wim, sregs->tbr, sregs->y);
-    ms->sis_memory_read (sregs->pc, (char *) &i, 4);
+    ms->sis_memory_read (sregs->pc, (unsigned char *) &i, 4);
     printf ("\n  pc: %08X = %08X    ", sregs->pc, i);
     print_insn_sparc_sis(sregs->pc, &dinfo);
-    ms->sis_memory_read (sregs->npc, (char *) &i, 4);
+    ms->sis_memory_read (sregs->npc, (unsigned char *) &i, 4);
     printf ("\n npc: %08X = %08X    ", sregs->npc, i);
     print_insn_sparc_sis(sregs->npc, &dinfo);
     if (sregs->err_mode)
@@ -1218,7 +1218,7 @@ bfd_load (const char *fname)
 		    bfd_get_section_contents(pbfd, section, buffer, fptr, count);
 
 		    for (i = 0; i < count; i++)
-			ms->sis_memory_write ((section_address + i) ^ EBT, &buffer[i], 1);
+			ms->sis_memory_write ((section_address + i) ^ EBT, (unsigned char *)&buffer[i], 1);
 		    section_address += count;
 		    fptr += count;
 		    section_size -= count;
