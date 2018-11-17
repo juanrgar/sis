@@ -1,5 +1,5 @@
 * Include BFD so that bfd_load works. [CHECK]
-* Uncomment print_* functions.
+* Uncomment print_* functions. [CHECK]
 * Uncomment UART stuff.
 * Remove references to host_callback and other structures from
   the interface with GDB.
