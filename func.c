@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include "sis.h"
-// #include <dis-asm.h>
+#include <dis-asm.h>
 // #include "sim-config.h"
 #include <inttypes.h>
 #include <sys/time.h>
@@ -1136,7 +1136,7 @@ sys_halt()
 #include <stdarg.h>
 
 // #include "libiberty.h"
-// #include "bfd.h"
+#include "bfd.h"
 
 #define min(A, B) (((A) < (B)) ? (A) : (B))
 #define LOAD_ADDRESS 0
@@ -1144,96 +1144,94 @@ sys_halt()
 int
 bfd_load (const char *fname)
 {
-    printf("NOT IMPLEMENTED!\n");
-    /* asection       *section; */
-    /* bfd            *pbfd; */
-    /* const bfd_arch_info_type *arch; */
-    /* int            i; */
+    asection       *section;
+    bfd            *pbfd;
+    const bfd_arch_info_type *arch;
+    int            i;
 
-    /* pbfd = bfd_openr(fname, 0); */
+    pbfd = bfd_openr(fname, 0);
 
-    /* if (pbfd == NULL) { */
-	/* printf("open of %s failed\n", fname); */
-	/* return -1; */
-    /* } */
-    /* if (!bfd_check_format(pbfd, bfd_object)) { */
-	/* printf("file %s  doesn't seem to be an object file\n", fname); */
-	/* return -1; */
-    /* } */
+    if (pbfd == NULL) {
+	printf("open of %s failed\n", fname);
+	return -1;
+    }
+    if (!bfd_check_format(pbfd, bfd_object)) {
+	printf("file %s  doesn't seem to be an object file\n", fname);
+	return -1;
+    }
 
-    /* arch = bfd_get_arch_info (pbfd); */
-    /* if (sis_verbose) */
-	/* printf("loading %s:", fname); */
-    /* for (section = pbfd->sections; section; section = section->next) { */
-	/* if (bfd_get_section_flags(pbfd, section) & SEC_ALLOC) { */
-	/*     bfd_vma         section_address; */
-	/*     unsigned long   section_size; */
-	/*     const char     *section_name; */
+    arch = bfd_get_arch_info (pbfd);
+    if (sis_verbose)
+	printf("loading %s:", fname);
+    for (section = pbfd->sections; section; section = section->next) {
+	if (bfd_get_section_flags(pbfd, section) & SEC_ALLOC) {
+	    bfd_vma         section_address;
+	    unsigned long   section_size;
+	    const char     *section_name;
 
-	/*     section_name = bfd_get_section_name(pbfd, section); */
+	    section_name = bfd_get_section_name(pbfd, section);
 
-	/*     section_address = bfd_get_section_lma(pbfd, section); */
-	/*     /\* */
-	/*      * Adjust sections from a.out files, since they don't carry their */
-	/*      * addresses with. */
-	/*      *\/ */
-	/*     if (bfd_get_flavour(pbfd) == bfd_target_aout_flavour) { */
-	/* 	if (strcmp (section_name, ".text") == 0) */
-	/* 	    section_address = bfd_get_start_address (pbfd); */
-	/* 	else if (strcmp (section_name, ".data") == 0) { */
-	/* 	    /\* Read the first 8 bytes of the data section. */
-	/* 	       There should be the string 'DaTa' followed by */
-	/* 	       a word containing the actual section address. *\/ */
-	/* 	    struct data_marker */
-	/* 	    { */
-	/* 		char signature[4];	/\* 'DaTa' *\/ */
-	/* 		unsigned char sdata[4];	/\* &sdata *\/ */
-	/* 	    } marker; */
-	/* 	    bfd_get_section_contents (pbfd, section, &marker, 0, */
-	/* 				      sizeof (marker)); */
-	/* 	    if (strncmp (marker.signature, "DaTa", 4) == 0) */
-	/* 	      { */
-	/* 		section_address = bfd_getb32 (marker.sdata); */
-	/* 	      } */
-	/* 	} */
-	/*     } */
+	    section_address = bfd_get_section_lma(pbfd, section);
+	    /*
+	     * Adjust sections from a.out files, since they don't carry their
+	     * addresses with.
+	     */
+	    if (bfd_get_flavour(pbfd) == bfd_target_aout_flavour) {
+		if (strcmp (section_name, ".text") == 0)
+		    section_address = bfd_get_start_address (pbfd);
+		else if (strcmp (section_name, ".data") == 0) {
+		    /* Read the first 8 bytes of the data section.
+		       There should be the string 'DaTa' followed by
+		       a word containing the actual section address. */
+		    struct data_marker
+		    {
+			char signature[4];	/* 'DaTa' */
+			unsigned char sdata[4];	/* &sdata */
+		    } marker;
+		    bfd_get_section_contents (pbfd, section, &marker, 0,
+					      sizeof (marker));
+		    if (strncmp (marker.signature, "DaTa", 4) == 0)
+		      {
+			section_address = bfd_getb32 (marker.sdata);
+		      }
+		}
+	    }
 
-	/*     section_size = bfd_section_size(pbfd, section); */
+	    section_size = bfd_section_size(pbfd, section);
 
-	/*     if (sis_verbose) */
-	/* 	printf("\nsection %s at 0x%08lx (0x%lx bytes)", */
-	/* 	       section_name, section_address, section_size); */
+	    if (sis_verbose)
+		printf("\nsection %s at 0x%08lx (0x%lx bytes)",
+		       section_name, section_address, section_size);
 
-	/*     /\* Text, data or lit *\/ */
-	/*     if (bfd_get_section_flags(pbfd, section) & SEC_LOAD) { */
-	/* 	file_ptr        fptr; */
+	    /* Text, data or lit */
+	    if (bfd_get_section_flags(pbfd, section) & SEC_LOAD) {
+		file_ptr        fptr;
 
-	/* 	fptr = 0; */
+		fptr = 0;
 
-	/* 	while (section_size > 0) { */
-	/* 	    char            buffer[1024]; */
-	/* 	    int             count; */
+		while (section_size > 0) {
+		    char            buffer[1024];
+		    int             count;
 
-	/* 	    count = min(section_size, 1024); */
+		    count = min(section_size, 1024);
 
-	/* 	    bfd_get_section_contents(pbfd, section, buffer, fptr, count); */
+		    bfd_get_section_contents(pbfd, section, buffer, fptr, count);
 
-	/* 	    for (i = 0; i < count; i++) */
-	/* 		ms->sis_memory_write ((section_address + i) ^ EBT, &buffer[i], 1); */
-	/* 	    section_address += count; */
-	/* 	    fptr += count; */
-	/* 	    section_size -= count; */
-	/* 	} */
-	/*     } else		/\* BSS *\/ */
-	/* 	if (sis_verbose) */
-	/* 	    printf("(not loaded)"); */
-	/* } */
-    /* } */
-    /* if (sis_verbose) */
-	/* printf("\n"); */
+		    for (i = 0; i < count; i++)
+			ms->sis_memory_write ((section_address + i) ^ EBT, &buffer[i], 1);
+		    section_address += count;
+		    fptr += count;
+		    section_size -= count;
+		}
+	    } else		/* BSS */
+		if (sis_verbose)
+		    printf("(not loaded)");
+	}
+    }
+    if (sis_verbose)
+	printf("\n");
 
-    /* return bfd_get_start_address (pbfd); */
-    return 0;
+    return bfd_get_start_address (pbfd);
 }
 
 double get_time (void)
